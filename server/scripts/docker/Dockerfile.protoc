@@ -1,0 +1,15 @@
+FROM golang:1.15.13-buster
+
+ENV GO111MODULE=on
+ARG PROTOC_VERSION
+ARG PROTOC_GEN_GO_VERSION
+ARG PROTOC_GEN_GO_GRPC_VERSION
+
+ADD https://github.com/google/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-x86_64.zip ./
+RUN apt-get -q -y update && \
+  apt-get -q -y install unzip && \
+  unzip protoc-${PROTOC_VERSION}-linux-x86_64.zip -d /usr/local && \
+  go get google.golang.org/protobuf/cmd/protoc-gen-go@${PROTOC_GEN_GO_VERSION} && \
+  go get google.golang.org/grpc/cmd/protoc-gen-go-grpc@${PROTOC_GEN_GO_GRPC_VERSION}
+
+VOLUME ["/protos"]
